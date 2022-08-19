@@ -22,15 +22,15 @@ help='
     ps1            Optional image-specific PS1 string, otherwise `<img>:<ver>> `
                    is used.
     dockerfile     Optional dockerfile as string, which will be built if it
-                   doesn'"'"'t exist or if `--force-build` is set.
+                   doesn'"'"'t exist or if `---build` is set.
   
   Additional flags which will be parsed out of `<run flags>`
   
-    --help         Print this help
-    --force-build  Force rebuild if a custom `dockerfile` is set
-    --force-echo   Force echoing of docker command 
-    --force-no-tty Force session not to use a tty (uses `-i` instead of `-it`)
-    --force-no-ps1 Do not attempt to inject a prompt based on image name
+    ---help        Print this help
+    ---build       Force rebuild if a custom `dockerfile` is set
+    ---echo        Force echoing of docker command 
+    ---no-tty      Force session not to use a tty (uses `-i` instead of `-it`)
+    ---no-ps1      Do not attempt to inject a prompt based on image name
 '
 
 # use podman by default, but docker if unavailable/not started
@@ -62,52 +62,56 @@ flags="""
 echo_cmd=0
 build_image=0
 use_ps1=1
-
 newline="
 "
 
 # args to filter from call_flags
-script_args=( "--help" "--force-build" "--force-echo" "--force-no-tty" "--force-no-ps1")
+script_args=( "---help" "---build" "---echo" "---no-tty" "---tag", "---no-ps1" )
 all_flags=$@
 
+# print help 
+if (( $# == 0 )) || [[ $all_flags == *"---help"* ]]; then
+    echo "$help"
+    exit
+fi
+
 # choose tty or not
-if [[ $all_flags == *"--force-no-tty"* ]]; then
+if [[ $all_flags == *"---no-tty"* ]]; then
     flags="-i${newline}${flags}"
-    all_flags=$(sed "s/['\"]*--force-no-tty['\"]*//g" <<< $all_flags)
+    all_flags=$(sed "s/['\"]*---no-tty['\"]*//g" <<< $all_flags)
 else
     flags="-i${use_tty}${newline}${flags}"
 fi
 
 # echo command
-if [[ $all_flags == *"--force-echo"* ]]; then
+if [[ $all_flags == *"---echo"* ]]; then
     echo_cmd=1
-    all_flags=$(sed "s/['\"]*--force-echo['\"]*//g" <<< $all_flags)
+    all_flags=$(sed "s/['\"]*---echo['\"]*//g" <<< $all_flags)
 fi
 
 # build image
-if [[ $all_flags == *"--force-build"* ]]; then
+if [[ $all_flags == *"---build"* ]]; then
     build_image=1
-    all_flags=$(sed "s/['\"]*--force-build['\"]*//g" <<< $all_flags)
+    all_flags=$(sed "s/['\"]*---build['\"]*//g" <<< $all_flags)
 fi
 
 # build image
-if [[ $all_flags == *"--force-no-ps1"* ]]; then
+if [[ $all_flags == *"---no-ps1"* ]]; then
     use_ps1=0
-    all_flags=$(sed "s/['\"]*--force-no-ps1['\"]*//g" <<< $all_flags)
+    all_flags=$(sed "s/['\"]*---no-ps1['\"]*//g" <<< $all_flags)
 fi
 
+# override language image version
+if [[ $all_flags == *"---tag="* ]]; then
+    ver=$(sed -E 's/.*---tag=(\S+).*/\1/g' <<< $all_flags)
+    all_flags=$(sed "s/['\"]*---tag['\"]*//g" <<< $all_flags)
+fi
 
 # split flags on " -- ", dividing docker flags from entrypoint cmd
 all_flags=$(sed "s/\s['\"]*--['\"]*\s/ -- /g" <<< $all_flags)
 if [[ $all_flags =~ "-- " ]]; then
     call_cmd=${all_flags##*-- }
     call_flags=${all_flags%%-- *}
-fi
-
-# print help 
-if [[ $call_flags =~ ^(.*)--help(.*)$ ]]; then
-    echo $help
-    exit
 fi
 
 # create a nicer ps1 from docker img:ver if not already set
