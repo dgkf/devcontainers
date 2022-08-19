@@ -30,7 +30,7 @@ flesh them out further!
 | Julia | `julia` | :large_blue_circle: :large_blue_circle: :black_circle: | needs a web-based display target, but I haven't explored it extensively | 
 | Python | `python` <br> `pylsp` | :large_blue_circle: :large_blue_circle: :black_circle: | |
 | JS | `node` <br>`npm` | :large_blue_circle: :black_circle: :black_circle: | |
-| Rust | `rust` <br> `rustfmt` <br> `rustc` <br> `rust-analyzer` | :large_blue_circle: :black_circle: :black_circle: | language server crashes frequently |
+| Rust | `cargo` <br> `rustfmt` <br> `rustc` <br> `rust-analyzer` | :large_blue_circle: :black_circle: :black_circle: | language server crashes frequently |
 | Prolog | `prolog` | :large_blue_circle: :black_circle: :black_circle: | |
 | APL | `apl` | :large_blue_circle: :black_circle: :black_circle: | |
 | Go | `go` | :large_blue_circle: :black_circle: :black_circle: | |
