@@ -50,9 +50,10 @@ shell in the container:
 R -- bash
 ```
 
-Force the container to re-build using `--force-build`, and output the full
-container launch command using `--force-echo`
+To help minimize paramter conflicts with runtime executables, script flags are
+prefixed with `---`. Common flags include `---build` to force the image to 
+re-build, and `---echo` to output the full container launch command.
 
 ```
-R --force-build --force-echo
+R ---build ---echo
 ```
