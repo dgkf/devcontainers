@@ -29,7 +29,7 @@ flesh them out further!
 | R | `R` <br> `Rscript` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: | graphics via web device using [`httpgd`](https://github.com/nx10/httpgd) |
 | Julia | `julia` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: | needs a web-based display target, but I haven't explored it extensively | 
 | Python | `python` <br> `pylsp` | :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: :black_circle: | |
-| JavaScript | `node` <br>`npm` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| JS | `node` <br>`npm` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
 | Rust | `rust` <br> `rustfmt` <br> `rustc` <br> `rust-analyzer` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | language server crashes frequently |
 | Prolog | `prolog` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
 | APL | `apl` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
