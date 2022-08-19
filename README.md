@@ -52,7 +52,8 @@ R -- bash
 
 To help minimize paramter conflicts with runtime executables, script flags are
 prefixed with `---`. Common flags include `---build` to force the image to 
-re-build, and `---echo` to output the full container launch command.
+re-build, and `---echo` to output the full container launch command, or 
+`---help` to see other options.
 
 ```
 R ---build ---echo
