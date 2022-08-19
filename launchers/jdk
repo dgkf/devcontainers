@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org=""
+img="maven"
+ver="latest"
+config_flags="
+    -v /tmp:/tmp
+"
+
+source "$(dirname $0)/devenv/launch.sh" -- java ${*@Q}

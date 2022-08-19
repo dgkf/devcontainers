@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org=""
+img="julia"
+ver="latest"
+config_flags="
+    -v /tmp:/tmp
+    -v julia_$ver:/root/.julia
+"
+
+dockerfile="
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+  libglfw3
+"
+
+# quote args using printf over @Q for older bash versions
+if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
+source "$(dirname $0)/devenv/launch.sh" -- julia $args

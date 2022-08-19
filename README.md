@@ -1,2 +1,58 @@
 # devcontainers
+
 An experiment in using containers as language runtime executables
+
+## Get Started
+
+1. Clone the repo
+2. Make language scripts executable (if they aren't already)
+3. Add `/launchers` to your `PATH`
+4. Try out a language runtime
+
+## Goals
+
+- Local-like executable, providing persistent storage for things like package
+  libraries and full access to the user's home directory.
+- Quick and easy set-up of language runtimes
+- Relatively engine agnostic (`podman` default with `docker` fallback)
+- Leverage publicly maintained images where possible, with minimal additions to
+  make them operable as a local runtime.
+
+## Project Status
+
+The different available executables span a wide range of maturity, primarily
+driven by which languages I spend the most time in. Contributions are welcome to
+flesh them out further!
+
+| Language | Maturity | Notes |
+|---|---|---|
+| `R` (`Rscript`) | :large_blue_circle: :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: | graphics via web device using [`httpgd`](https://github.com/nx10/httpgd) |
+| `julia` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: | needs a web-based display target, but I haven't explored it extensively | 
+| `python` (`pylsp`) | :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: :black_circle: | |
+| `node` (`npm`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| `rust` (`rustfmt`, `rustc`, `rust-analyzer`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | language server crashes frequently |
+| `prolog` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| `apl` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| `go` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| Java (`jdk`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| C (`clangd`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+
+## Customizations
+
+Generally, the executables should behave like a local executable. There are a
+few flags that provide extra functionality to work with the containers
+themselves.
+
+Use `--` to provide your own `CMD`. For example, it's often handy to step into a
+shell in the container:
+
+```
+R -- bash
+```
+
+Force the container to re-build using `--force-build`, and output the full
+container launch command using `--force-echo`
+
+```
+R --force-build --force-echo
+```

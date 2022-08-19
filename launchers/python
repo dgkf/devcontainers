@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org=""
+img="python"
+ver="latest"
+config_flags="
+    -v python_pip_$ver:/usr/local/lib/python-container-env
+    -v /tmp:/tmp
+    -v /usr/share/fonts:/usr/share/fonts
+"
+
+dockerfile='
+RUN mkdir -p /usr/local/lib/python-container-env/bin && \
+    ln -s /usr/local/sbin /usr/local/lib/python-container-env/bin
+
+ENV PIP_PREFIX="/usr/local/lib/python-container-env/"
+ENV PYTHONPATH="/usr/local/lib/python-container-env/lib/python3.10/site-packages"
+ENV PATH="/usr/local/lib/python-container-env/bin:${PATH}"
+'
+
+# quote args using printf over @Q for older bash versions
+if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
+source "$(dirname $0)/_launch.sh" -- python $args

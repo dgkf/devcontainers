@@ -1,0 +1,2 @@
+#! /usr/bin/env bash
+rust -- cargo ${*@Q}

@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org="klakegg"
+img="hugo"
+ver="latest"
+config_flags="
+    --entrypoint ''
+"
+
+
+source "$(dirname $0)/devenv/launch.sh" -- ${*@Q}

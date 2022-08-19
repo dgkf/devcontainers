@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org="dyalog"
+img="dyalog"
+ver="latest"
+config_flags="
+"
+
+source "$(dirname $0)/_launch.sh"

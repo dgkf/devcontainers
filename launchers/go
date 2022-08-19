@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org=""
+img="golang"
+ver="latest"
+config_flags="
+"
+
+dockerfile="
+"
+
+source "$(dirname $0)/devenv/launch.sh"

@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org=""
+img="node"
+ver="latest"
+config_flags="
+    -v $img_$ver:/usr/local/
+"
+
+source "$(dirname $0)/devenv/launch.sh" -- npm ${*@Q}
