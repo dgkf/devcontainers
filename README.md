@@ -24,18 +24,18 @@ The different available executables span a wide range of maturity, primarily
 driven by which languages I spend the most time in. Contributions are welcome to
 flesh them out further!
 
-| Language | Maturity | Notes |
-|---|---|---|
-| `R` (`Rscript`) | :large_blue_circle: :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: | graphics via web device using [`httpgd`](https://github.com/nx10/httpgd) |
-| `julia` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: | needs a web-based display target, but I haven't explored it extensively | 
-| `python` (`pylsp`) | :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: :black_circle: | |
-| `node` (`npm`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
-| `rust` (`rustfmt`, `rustc`, `rust-analyzer`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | language server crashes frequently |
-| `prolog` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
-| `apl` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
-| `go` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
-| Java (`jdk`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
-| C (`clangd`) | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| Language | Commands | Maturity | Notes |
+|---|---|---|---|
+| R | `R` <br> `Rscript` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: | graphics via web device using [`httpgd`](https://github.com/nx10/httpgd) |
+| Julia | `julia` | :large_blue_circle: :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: | needs a web-based display target, but I haven't explored it extensively | 
+| Python | `python` <br> `pylsp` | :large_blue_circle: :large_blue_circle: :black_circle: :black_circle: :black_circle: | |
+| JavaScript | `node` <br>`npm` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| Rust | `rust` <br> `rustfmt` <br> `rustc` <br> `rust-analyzer` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | language server crashes frequently |
+| Prolog | `prolog` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| APL | `apl` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| Go | `go` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| Java | `jdk` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
+| C | `clangd` | :large_blue_circle: :black_circle: :black_circle: :black_circle: :black_circle: | |
 
 ## Customizations
 
