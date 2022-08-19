@@ -44,80 +44,76 @@ else
     [[ $prot -eq "docker" ]] && export name="$prot.io/$name" && unset prot;
 fi
 
-# determine if launched from a tty (omit -t for podman on macos)
 test -t 1 && use_tty="t"
-
-# always run as root user
-# map home directory into root user directory
-flags="""
-    --rm
-    -v $HOME:/root
-    -v $HOME:$HOME
-    -w \"$(sed "s@^$HOME@/root@g" <<< $PWD)\"
-    --network host
-"""
-#    --userns keep-id
-#    --init
-
 echo_cmd=0
 build_image=0
 use_ps1=1
 newline="
 "
 
-# args to filter from call_flags
-script_args=( "---help" "---build" "---echo" "---no-tty" "---tag", "---no-ps1" )
-all_flags=$@
+hit_dash=0
+call_flags=()  # before "--"
+call_cmd=()    # after "--" 
 
-# print help 
-if (( $# == 0 )) || [[ $all_flags == *"---help"* ]]; then
-    echo "$help"
-    exit
-fi
+for i in "$@"; do
+  case $1 in
+    ---help)
+      echo "$help"
+      exit
+      ;;
+    ---build)
+      build_image=1
+      shift
+      ;;
+    ---echo)
+      echo_cmd=1
+      shift
+      ;;
+    ---no-tty)
+      use_tty=""
+      shift
+      ;;
+    ---no-ps1)
+      use_ps1=0
+      shift
+      ;;
+    ---tag=*)
+      ver="${i#*=}"
+      shift
+      ;;
+    --)
+      call_cmd=()
+      hit_dash=1
+      shift
+      ;;
+    *)
+      if (( $hit_dash )); then call_cmd+=("$1"); else call_flags+=("$1"); fi
+      shift # past argument
+      ;;
+  esac
+done
 
-# choose tty or not
-if [[ $all_flags == *"---no-tty"* ]]; then
-    flags="-i${newline}${flags}"
-    all_flags=$(sed "s/['\"]*---no-tty['\"]*//g" <<< $all_flags)
-else
-    flags="-i${use_tty}${newline}${flags}"
-fi
 
-# echo command
-if [[ $all_flags == *"---echo"* ]]; then
-    echo_cmd=1
-    all_flags=$(sed "s/['\"]*---echo['\"]*//g" <<< $all_flags)
-fi
+# set our launch flags, most importantly this:
+#  - only uses a tty if one is available
+#  - maps home to /root as well as image user home
+#  - sets current directory to the working directory within the image
+#  - shares the host network to the image
+flags="
+    --rm
+    -i${use_tty}
+    -v $HOME:/root
+    -v $HOME:$HOME
+    -w \"$(sed "s@^$HOME@/root@g" <<< $PWD)\"
+    --network host
+"
 
-# build image
-if [[ $all_flags == *"---build"* ]]; then
-    build_image=1
-    all_flags=$(sed "s/['\"]*---build['\"]*//g" <<< $all_flags)
-fi
-
-# build image
-if [[ $all_flags == *"---no-ps1"* ]]; then
-    use_ps1=0
-    all_flags=$(sed "s/['\"]*---no-ps1['\"]*//g" <<< $all_flags)
-fi
-
-# override language image version
-if [[ $all_flags == *"---tag="* ]]; then
-    ver=$(sed -E 's/.*---tag=(\S+).*/\1/g' <<< $all_flags)
-    all_flags=$(sed "s/['\"]*---tag['\"]*//g" <<< $all_flags)
-fi
-
-# split flags on " -- ", dividing docker flags from entrypoint cmd
-all_flags=$(sed "s/\s['\"]*--['\"]*\s/ -- /g" <<< $all_flags)
-if [[ $all_flags =~ "-- " ]]; then
-    call_cmd=${all_flags##*-- }
-    call_flags=${all_flags%%-- *}
-fi
 
 # create a nicer ps1 from docker img:ver if not already set
 if [ -z "$ps1" ]; then
     if [ -n "$ver" ]; then ps1="$img:$ver"; else ps1="$img:latest"; fi
 fi
+
 
 # append default command, returning to default upon termination
 cmd="bash -c \"bash --init-file <(echo \\\"PS1=$ps1\>\ \\\";) --noprofile\""
@@ -129,11 +125,13 @@ elif [[ -n "$call_cmd" ]]; then
     cmd=$call_cmd; 
 fi
 
+
 # collapse name
 name=$img
 if [ -n "$org" ];  then name="$org/$name"; fi
 if [ -n "$prot" ]; then name="$prot://$name"; fi
 if [ -n "$ver" ];  then name="$name:$ver"; fi
+
 
 # build local name (same as name unless using a dockerfile via docker)
 localname=$name
@@ -141,9 +139,10 @@ if [ -n "$dockerfile" ]; then
   localname="localhost/$img:$ver"
 fi
 
+
 # rebuild if needed
 $engine image inspect $localname > /dev/null 2> /dev/null
-if ! [ "$?" -eq 0 ] || [ $build_image -gt 0 ]; then
+if (( "$?" )) || (( $build_image )); then
     if [ -n "$dockerfile" ]; then 
         dockerfile="FROM $name$newline$dockerfile";
         echo "$dockerfile";
@@ -154,6 +153,7 @@ if ! [ "$?" -eq 0 ] || [ $build_image -gt 0 ]; then
     fi
 fi
 
+
 # construct a command from extracted components
 constructed_cmd="$engine run \
      $call_flags \
@@ -162,5 +162,6 @@ constructed_cmd="$engine run \
      $localname \
      $cmd"
 
-if [ $echo_cmd -gt 0 ]; then echo "$constructed_cmd"; fi
+
+if (( $echo_cmd )); then echo "$constructed_cmd"; fi
 eval "$constructed_cmd"

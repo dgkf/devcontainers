@@ -9,11 +9,11 @@ config_flags="
     -v rust_rustup_$ver:/usr/local/rustup
 "
 
-dockerfile="
-RUN rustup +nightly component add rust-analyzer-preview
-RUN echo '#!/usr/bin/env bash'               > /usr/local/bin/rust-analyzer
-RUN echo 'rustup run nightly rust-analyzer' >> /usr/local/bin/rust-analyzer
-RUN chmod +x /usr/local/bin/rust-analyzer
-"
+dockerfile=$(cat <<EOF
+RUN rustup +nightly component add rust-analyzer-preview \
+ && echo '#! /usr/bin/env bash\nrustup run nightly rust-analyzer' > /usr/local/bin/rust-analyzer \
+ && chmod +x /usr/local/bin/rust-analyzer
+EOF
+)
 
 source "$(dirname $0)/_launch.sh"
