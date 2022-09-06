@@ -5,7 +5,8 @@ org=""
 img="node"
 ver="latest"
 config_flags="
-    -v $img_$ver:/usr/local/
+    -v ${img}_${ver}:/usr/local/
 "
 
-source "$(dirname $0)/_launch.sh" -- npm ${*@Q}
+if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
+source "$(dirname $0)/_launch.sh" -- npm $args
