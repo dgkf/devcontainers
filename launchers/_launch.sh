@@ -35,8 +35,8 @@ help='
 
 # use podman by default, but docker if unavailable/not started
 if [ -x "$(command -v podman)" ] && 
-   ! [ podman machine inspect 2> /dev/null ] || 
-   [[ "$(podman machine inspect)" == *'"State": "running"'* ]]; 
+   (! (podman machine inspect 2>&1 1>/dev/null) || 
+   [[ "$(podman machine inspect)" == *'"State": "running"'* ]]); 
 then 
     engine="podman";
 else 
@@ -94,6 +94,10 @@ for i in "$@"; do
 done
 
 
+call_cmd="${call_cmd[@]}"
+call_flags="${call_flags[@]}"
+
+
 # set our launch flags, most importantly this:
 #  - only uses a tty if one is available
 #  - maps home to /root as well as image user home
@@ -136,7 +140,7 @@ if [ -n "$ver" ];  then name="$name:$ver"; fi
 # build local name (same as name unless using a dockerfile via docker)
 localname=$name
 if [ -n "$dockerfile" ]; then 
-  localname="localhost/$img:$ver"
+  localname="localhost/$img"
 fi
 
 

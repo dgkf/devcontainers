@@ -2,11 +2,12 @@
 
 prot="docker"
 org="rocker"
-img="r-ver"
+img="verse"  # use "verse" for quarto add-in
 ver="latest"
 config_flags="
     -v rlib_$ver:/usr/local/lib/R/site-library
     -v /tmp:/tmp
+    --platform=linux/amd64
 "
 
 dockerfile="
@@ -21,7 +22,8 @@ RUN apt-get update && \
         libudunits2-dev \
         proj-bin \
         gdal-bin \
-        libgdal-dev
+        libgdal-dev \
+        valgrind
 "
 
 # quote args using printf over @Q for older bash versions
