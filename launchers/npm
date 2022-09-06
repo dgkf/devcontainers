@@ -8,4 +8,4 @@ config_flags="
     -v $img_$ver:/usr/local/
 "
 
-source "$(dirname $0)/devenv/launch.sh" -- npm ${*@Q}
+source "$(dirname $0)/_launch.sh" -- npm ${*@Q}
