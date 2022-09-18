@@ -11,4 +11,4 @@ dockerfile=""
 
 # quote args using printf over @Q for older bash versions
 if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
-source "$(dirname $0)/devenv/launch.sh" --force-no-ps1 -- $args
+source "$(dirname $0)/_launch.sh" --force-no-ps1 -- $args

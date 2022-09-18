@@ -35,7 +35,7 @@ help='
 
 # use podman by default, but docker if unavailable/not started
 if [ -x "$(command -v podman)" ] && 
-   (! (podman machine inspect 2>&1 1>/dev/null) || 
+   (! (podman machine inspect >/dev/null 2>&1) || 
    [[ "$(podman machine inspect)" == *'"State": "running"'* ]]); 
 then 
     engine="podman";
@@ -149,10 +149,11 @@ fi
 
 # collapse name
 name=$img
-if [ -n "$org" ];  then name="$org/$name"; fi
+if [ -z "$org"  ]; then org="library"; fi
+if [[ "$prot" -eq "docker" ]]; then org="docker.io/$org"; prot=""; fi
+if [ -n "$org"  ]; then name="$org/$name"; fi
 if [ -n "$prot" ]; then name="$prot://$name"; fi
-if [ -n "$ver" ];  then name="$name:$ver"; fi
-
+if [ -n "$ver"  ]; then name="$name:$ver"; fi
 
 # build local name (same as name unless using a dockerfile via docker)
 localname=$name
@@ -162,8 +163,7 @@ fi
 
 
 # rebuild if needed
-$engine image inspect $localname > /dev/null 2> /dev/null
-if (( "$?" )) || (( $build_image )); then
+if ! ($engine image inspect $localname >/dev/null 2>&1) || (( $build_image )); then
     if [ -n "$dockerfile" ]; then 
         dockerfile="FROM $name$newline$dockerfile";
         echo "$dockerfile";
