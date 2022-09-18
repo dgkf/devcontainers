@@ -4,14 +4,22 @@ prot="docker"
 org="rocker"
 img="r-ver"
 ver="latest"
+
+# to work on dgkf/debugadapter, need to work around docker macos host network
+# sharing issues
+
 config_flags="
     -v rlib_$ver:/usr/local/lib/R/site-library
-    -v /tmp:/tmp
 "
 
 dockerfile="
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        libfontconfig1-dev \
+        libssl-dev \
+        libgit2-dev \
+        zlib1g-dev \
+        libtool \
         libharfbuzz-dev \
         libfribidi-dev \
         libfreetype6-dev \

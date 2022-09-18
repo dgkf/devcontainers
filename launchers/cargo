@@ -1,2 +1,5 @@
 #! /usr/bin/env bash
-rust -- cargo ${*@Q}
+
+# quote args using printf over @Q for older bash versions
+if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
+rust -- cargo $args

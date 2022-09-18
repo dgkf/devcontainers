@@ -10,12 +10,12 @@ help='
   will be returned to upon completion of `cmd` - helpful for spawning a
   development REPL which will exit to a shell session. Uses either `podman` if
   available or `docker` otherwise.
-    
+
     <run flags>    Passed as `docker run <run flags> img`
     <cmd>          Passed as `docker run img <cmd>`
-  
+
   Interpreted variables
-   
+
     org img ver    Docker image name, `<org>/<img>:<ver>` or empty
     config_flags   Flags passed as <run_flags> specific to an image. Newline
                    characters will be stripped.
@@ -23,9 +23,9 @@ help='
                    is used.
     dockerfile     Optional dockerfile as string, which will be built if it
                    doesn'"'"'t exist or if `---build` is set.
-  
+
   Additional flags which will be parsed out of `<run flags>`
-  
+
     ---help        Print this help
     ---build       Force rebuild if a custom `dockerfile` is set
     ---echo        Force echoing of docker command 
@@ -52,10 +52,18 @@ newline="
 "
 
 hit_dash=0
+call_flag_next=0
 call_flags=()  # before "--"
 call_cmd=()    # after "--" 
 
 for i in "$@"; do
+  if (( $call_flag_next )); then
+    call_flags+=(" $i")
+    call_flag_next=0
+    shift
+    continue
+  fi;
+
   case $1 in
     ---help)
       echo "$help"
@@ -81,6 +89,11 @@ for i in "$@"; do
       ver="${i#*=}"
       shift
       ;;
+    ---*)
+      call_flags+=("${i#--*}")
+      [[ $i != *"="* ]] && call_flag_next=1
+      shift
+      ;;
     --)
       call_cmd=()
       hit_dash=1
@@ -88,14 +101,18 @@ for i in "$@"; do
       ;;
     *)
       if (( $hit_dash )); then call_cmd+=("$1"); else call_flags+=("$1"); fi
-      shift # past argument
+      shift
       ;;
   esac
 done
 
-
 call_cmd="${call_cmd[@]}"
 call_flags="${call_flags[@]}"
+
+# if any ports are published, disable host network
+if [[ $call_flags != *"-p="* ]] && [[ $call_flags != *"--publish="* ]]; then
+    network="--network host";
+fi
 
 
 # set our launch flags, most importantly this:
@@ -109,7 +126,7 @@ flags="
     -v $HOME:/root
     -v $HOME:$HOME
     -w \"$(sed "s@^$HOME@/root@g" <<< $PWD)\"
-    --network host
+    ${network}
 "
 
 
