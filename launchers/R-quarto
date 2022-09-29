@@ -5,7 +5,7 @@ org="rocker"
 img="verse"  # use "verse" for quarto add-in
 ver="latest"
 config_flags="
-    -v rlib_$ver:/usr/local/lib/R/site-library
+    -v rlib_${org}_${image}_${ver}:/usr/local/lib/R/site-library
     -v /tmp:/tmp
     --platform=linux/amd64
 "
