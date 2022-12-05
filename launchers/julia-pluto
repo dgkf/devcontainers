@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
 prot="docker"
-org=""
-img="julia"
+org="plutojl"
+img="pluto"
 ver="latest"
 config_flags="
     -v julia_$ver:/root/.julia
@@ -11,12 +11,9 @@ config_flags="
 dockerfile="
 RUN apt-get update && apt-get install -y --no-install-recommends \\
   libglfw3
-
-# mitigate GR.jl plot device errors, set device as 'no output'
-# https://github.com/JuliaPlots/Plots.jl/issues/1076#issuecomment-327509819
-ENV GKSwstype=100   
 "
 
 # quote args using printf over @Q for older bash versions
 if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
 source "$(dirname $0)/_launch.sh" -- julia $args
+

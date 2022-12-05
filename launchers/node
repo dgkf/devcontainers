@@ -9,4 +9,5 @@ config_flags="
 "
 
 if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi
-source "$(dirname $0)/_launch.sh" -- node $args
+source "$(dirname $0)/_launch.sh" -- npm $args
+

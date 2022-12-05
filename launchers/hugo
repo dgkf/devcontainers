@@ -9,4 +9,4 @@ config_flags="
 "
 
 
-source "$(dirname $0)/_launch.sh" -- ${*@Q}
+source "$(dirname $0)/devenv/launch.sh" -- ${*@Q}

@@ -1,0 +1,64 @@
+#! /usr/bin/env bash
+
+prot="docker"
+org="library"
+img="ubuntu"
+ver="latest"
+config_flags="
+"
+
+dockerfile=$(cat <<EOF
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get -y install --no-install-recommends \
+      ca-certificates \
+      git \
+      curl \
+      xz-utils
+
+
+ARG ZIG_ARCH="linux-x86_64"
+
+# # latest release
+# RUN curl -L https://ziglang.org/download/index.json > zig-index.json && \
+#   curl -L \$(sed -n -E '0,/.*(https.*linux-x86_64-([[:digit:]]+\.)+tar\.xz).*/s//\1/gp' zig-index.json) | tar -xJ -C /opt && \
+#   ln -s \$(ls -d /opt/*zig-linux-x86_64*) /opt/zig && \
+#     rm zig-index.json
+
+# HEAD
+RUN curl -L https://ziglang.org/download/index.json > zig-index.json && \
+    curl -L \$(sed -n -E '0,/.*(https.*linux-x86_64-.*tar\.xz).*/s//\1/gp' zig-index.json) | tar -xJ -C /opt && \
+    rm -rf /opt/zig && \
+    ln -s \$(ls -d /opt/*zig-linux-x86_64*dev* | head -n 1) /opt/zig && \
+    rm zig-index.json
+
+
+    
+ENV PATH="/opt/zig:\${PATH}"
+
+# # latest release
+# RUN git clone --recurse-submodules https://github.com/zigtools/zls && \
+#     cd zls && \
+#     git checkout \$(git describe --abbrev=0 --tags) && \
+#     git submodule update --init --recursive && \
+#     zig build -Drelease-safe && \
+#     mkdir /opt/zls && \
+#     cp ./zig-out/bin/zls /opt/zls/ && \
+#     echo '{"zig_exe_path":"/opt/zig/zig","enable_snippets":true,"warn_style":true,"enable_semantic_tokens":true,"operator_completions":true}' > /opt/zls/zls.json && \
+#     cd .. && \
+#     rm -R zls
+
+# HEAD
+RUN git clone --recurse-submodules https://github.com/zigtools/zls && \
+    cd zls && \
+    zig build -Drelease-safe && \
+    mkdir /opt/zls && \
+    cp ./zig-out/bin/zls /opt/zls/ && \
+    echo '{"zig_exe_path":"/opt/zig/zig","enable_snippets":true,"warn_style":true,"enable_semantic_tokens":true,"operator_completions":true}' > /opt/zls/zls.json && \
+    cd .. && \
+    rm -R zls
+
+EOF
+);
+
+source "$(dirname $0)/devenv/launch.sh"

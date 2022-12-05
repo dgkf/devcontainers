@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+scriptname="r-ver-pandoc"
+
 prot="docker"
 org="rocker"
 img="r-ver"  # custom built quarto/pandoc

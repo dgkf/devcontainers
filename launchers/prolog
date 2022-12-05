@@ -8,4 +8,4 @@ config_flags="
     -v /tmp:/tmp
 "
 
-source "$(dirname $0)/_launch.sh" -- scryer-prolog ${*@Q}
+source "$(dirname $0)/devenv/launch.sh" -- scryer-prolog ${*@Q}

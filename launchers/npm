@@ -5,7 +5,7 @@ org=""
 img="node"
 ver="latest"
 config_flags="
-    -v ${img}_${ver}:/usr/local/
+    -v $img_$ver:/usr/local/
 "
 
 if [ $# -eq 0 ]; then args=""; else args=$(printf "%q " "$@"); fi

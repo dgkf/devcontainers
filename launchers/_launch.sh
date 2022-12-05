@@ -31,12 +31,12 @@ help='
     ---echo        Force echoing of docker command 
     ---no-tty      Force session not to use a tty (uses `-i` instead of `-it`)
     ---no-ps1      Do not attempt to inject a prompt based on image name
-'
+' 
 
 # use podman by default, but docker if unavailable/not started
 if [ -x "$(command -v podman)" ] && 
    (! (podman machine inspect 2>&1 1>/dev/null) || 
-   [[ "$(podman machine inspect)" == *'"State": "running"'* ]]); 
+   [[ "$(podman machine info -f json)" == *'"MachineState": "Running"'* ]]); 
 then 
     engine="podman";
 else 
@@ -114,8 +114,14 @@ if [[ $call_flags != *"-p="* ]] &&
    [[ $call_flags != *"-p "* ]] && 
    [[ $call_flags != *"--publish="* ]] &&
    [[ $call_flags != *"--publish "* ]]; then
-    network="--network host";
+    network="--network=host";
 fi
+
+# on mac, mount user cache & temp dirs
+# os_flags="
+#     -v $(getconf DARWIN_USER_CACHE_DIR):$(getconf DARWIN_USER_CACHE_DIR)
+#     -v $(getconf DARWIN_USER_TEMP_DIR):$(getconf DARWIN_USER_TEMP_DIR)
+# "
 
 
 # set our launch flags, most importantly this:
@@ -129,6 +135,7 @@ flags="
     -v $HOME:/root
     -v $HOME:$HOME
     -w \"$(sed "s@^$HOME@/root@g" <<< $PWD)\"
+    ${os_flags}
     ${network}
 "
 
@@ -158,25 +165,22 @@ if [ -n "$ver" ];  then name="$name:$ver"; fi
 
 
 # build local name (same as name unless using a dockerfile via docker)
-localname=$name
+localname="$(basename "$0")-$name"
 if [ -n "$dockerfile" ]; then 
-  localname="localhost/$img"
+  localname="${tag:=localhost/$img}"
 fi
-
 
 # rebuild if needed
 $engine image inspect $localname > /dev/null 2> /dev/null
 if (( "$?" )) || (( $build_image )); then
     if [ -n "$dockerfile" ]; then 
         dockerfile="FROM $name$newline$dockerfile";
-        echo "$dockerfile";
         $engine image rm --force $localname
-        $engine build -t $localname - < <(cat <<< "$dockerfile");
+        $engine build -t $localname - < <(echo "$dockerfile");
     else 
         $engine pull $name
     fi
 fi
-
 
 # construct a command from extracted components
 constructed_cmd="$engine run \

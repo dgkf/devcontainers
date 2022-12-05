@@ -9,12 +9,15 @@ ver="latest"
 # sharing issues
 
 config_flags="
-    -v rlib_${org}_${image}_${ver}:/usr/local/lib/R/site-library
+    -v rlib_${org}_${img}_${ver}:/usr/local/lib/R/site-library
 "
 
 dockerfile="
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        cmake \
+        proj-bin \
+        gdal-bin \
         libfontconfig1-dev \
         libssl-dev \
         libgit2-dev \
@@ -27,9 +30,8 @@ RUN apt-get update && \
         libtiff5-dev \
         libjpeg-dev \
         libudunits2-dev \
-        proj-bin \
-        gdal-bin \
-        libgdal-dev
+        libgdal-dev \
+        libcairo2-dev
 "
 
 # quote args using printf over @Q for older bash versions
