@@ -6,15 +6,18 @@ img="julia"
 ver="latest"
 config_flags="
     -v julia_$ver:/root/.julia
+    -v ~/.julia/dev:/root/.julia/dev
 "
 
 dockerfile="
-RUN apt-get update && apt-get install -y --no-install-recommends \\
-  libglfw3
+RUN apt-get update && \\
+    apt-get install -y --no-install-recommends \\
+            git \\
+            libglfw3
 
 # mitigate GR.jl plot device errors, set device as 'no output'
 # https://github.com/JuliaPlots/Plots.jl/issues/1076#issuecomment-327509819
-ENV GKSwstype=100   
+ENV GKSwstype=100
 "
 
 # quote args using printf over @Q for older bash versions

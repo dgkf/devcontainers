@@ -13,25 +13,27 @@ config_flags="
 "
 
 dockerfile="
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        cmake \
-        proj-bin \
-        gdal-bin \
-        libfontconfig1-dev \
-        libssl-dev \
-        libgit2-dev \
-        zlib1g-dev \
-        libtool \
-        libharfbuzz-dev \
-        libfribidi-dev \
-        libfreetype6-dev \
-        libpng-dev \
-        libtiff5-dev \
-        libjpeg-dev \
-        libudunits2-dev \
-        libgdal-dev \
-        libcairo2-dev
+RUN apt-get update &&                                                        \\
+    apt-get install -y --no-install-recommends                               \\
+        cmake                                                                \\
+        wget                                                                 \\
+        proj-bin                                                             \\
+        gdal-bin                                                             \\
+        libfontconfig1-dev                                                   \\
+        libssl-dev                                                           \\
+        libgit2-dev                                                          \\
+        zlib1g-dev                                                           \\
+        libtool                                                              \\
+        libharfbuzz-dev                                                      \\
+        libfribidi-dev                                                       \\
+        libfreetype6-dev                                                     \\
+        libpng-dev                                                           \\
+        libtiff5-dev                                                         \\
+        libjpeg-dev                                                          \\
+        libudunits2-dev                                                      \\
+        libgdal-dev                                                          \\
+        libcairo2-dev                                                        \\
+        libsodium-dev  # for plumber 
 "
 
 # quote args using printf over @Q for older bash versions
